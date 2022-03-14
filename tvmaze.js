@@ -12750,43 +12750,30 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 var $showsList = $("#showsList");
 var $episodesArea = $("#episodesArea");
 var $searchForm = $("#searchForm");
+var BASE_URL = "https://api.tvmaze.com";
 function getShowsByTerm(term) {
     return __awaiter(this, void 0, void 0, function () {
         var shows, showsDisplayData;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, axios_1.default.get("https://api.tvmaze.com/search/shows?q=".concat(term))];
+                case 0: return [4 /*yield*/, axios_1.default.get("".concat(BASE_URL, "/search/shows?q=").concat(term))];
                 case 1:
                     shows = _a.sent();
                     showsDisplayData = shows
                         .data
                         .map(function (s) {
-                        id: s.show.id,
-                            name;
-                        s.show.name,
-                            summary;
-                        s.show.summary,
-                            image;
-                        s.show.image.medium;
+                        return {
+                            id: s.show.id,
+                            name: s.show.name,
+                            summary: s.show.summary,
+                            image: s.show.image.medium
+                        };
                     });
                     return [2 /*return*/, showsDisplayData];
             }
         });
     });
 }
-// Example Return object from API: [   {     id     : 1767,     name   : "The
-// Bletchley Circle",     summary: `<p><b>The Bletchley Circle</b> follows the
-// journey of four ordinary          women with extraordinary skills that helped
-// to end World War II.</p>        <p>Set in 1952, Susan, Millie, Lucy and Jean
-// have returned to their          normal lives, modestly setting aside the part
-// they played in          producing crucial intelligence, which helped the
-// Allies to victory          and shortened the war. When Susan discovers a
-// hidden code behind an          unsolved murder she is met by skepticism from
-// the police. She          quickly realises she can only begin to crack the
-// murders and bring          the culprit to justice with her former
-// friends.</p>`,     image  :
-// "http://static.tvmaze.com/uploads/images/medium_portrait/147/369403.jpg"   }
-// ]
 /** Given list of shows, create markup for each and to DOM */
 function populateShows(shows) {
     $showsList.empty();
@@ -12833,7 +12820,24 @@ $searchForm.on("submit", function (evt) {
 /** Given a show ID, get from API and return (promise) array of episodes:
  *      { id, name, season, number }
  */
-// async function getEpisodesOfShow(id) { }
+function getEpisodesOfShow(id) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, axios_1.default.get("".concat(BASE_URL, "/shows/").concat(id, "/episodes"))];
+                case 1:
+                    response = _a.sent();
+                    return [2 /*return*/, response.data.map(function (e) { return ({
+                            id: e.id,
+                            name: e.name,
+                            season: e.season,
+                            number: e.number,
+                        }); })];
+            }
+        });
+    });
+}
 /** Write a clear docstring for this function... */
 // function populateEpisodes(episodes) { }
 
