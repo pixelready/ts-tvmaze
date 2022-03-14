@@ -12751,6 +12751,9 @@ var $showsList = $("#showsList");
 var $episodesArea = $("#episodesArea");
 var $searchForm = $("#searchForm");
 var BASE_URL = "https://api.tvmaze.com";
+/**  Given a serach term in string, request API and return data of shows
+ * matching the search
+*/
 function getShowsByTerm(term) {
     return __awaiter(this, void 0, void 0, function () {
         var shows, showsDisplayData;
@@ -12819,6 +12822,25 @@ $searchForm.on("submit", function (evt) {
         });
     });
 });
+/** Handle a episode button click */
+function getEpisodesAndDisplay(evt) {
+    return __awaiter(this, void 0, void 0, function () {
+        var showId, episodes;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    showId = $(evt.target).closest(".Show").data("show-id");
+                    return [4 /*yield*/, getEpisodesOfShow(showId)];
+                case 1:
+                    episodes = _a.sent();
+                    populateEpisodes(episodes);
+                    $episodesArea.show();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+$showsList.on("click", ".Show-getEpisodes", getEpisodesAndDisplay);
 /** Given a show ID, get from API and return (promise) array of episodes:
  *      { id, name, season, number }
  */
@@ -12832,17 +12854,22 @@ function getEpisodesOfShow(id) {
                     response = _a.sent();
                     return [2 /*return*/, response
                             .data
-                            .map(function (e) { return ({ id: e.id, name: e.name, season: e.season, number: e.number }); })];
+                            .map(function (e) { return ({
+                            id: e.id,
+                            name: e.name,
+                            season: e.season,
+                            number: e.number
+                        }); })];
             }
         });
     });
 }
-/** Write a clear docstring for this function... */
+/** Given a array of episode interfaces, show list of episodes in area */
 function populateEpisodes(episodes) {
     $episodesArea.empty();
     for (var _i = 0, episodes_1 = episodes; _i < episodes_1.length; _i++) {
         var episode = episodes_1[_i];
-        var $episode = $("<li><strong>".concat(episode.id, ". ").concat(episode.name, " </strong>(season ").concat(episode.season, ", ep. ").concat(episode.number, "</li>\n      "));
+        var $episode = $("<li>\n      <strong>".concat(episode.name, "</strong>(season ").concat(episode.season, ", ep. ").concat(episode.number, ")\n      </li>"));
         $episodesArea.append($episode);
     }
 }
