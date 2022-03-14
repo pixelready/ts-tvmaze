@@ -12759,14 +12759,16 @@ function getShowsByTerm(term) {
                 case 0: return [4 /*yield*/, axios_1.default.get("".concat(BASE_URL, "/search/shows?q=").concat(term))];
                 case 1:
                     shows = _a.sent();
+                    console.log("Shows", shows);
                     showsDisplayData = shows
                         .data
                         .map(function (s) {
+                        var _a;
                         return {
                             id: s.show.id,
                             name: s.show.name,
                             summary: s.show.summary,
-                            image: s.show.image.medium
+                            image: (((_a = s.show.image) === null || _a === void 0 ? void 0 : _a.medium) || 'tv_placeholder.jpg')
                         };
                     });
                     return [2 /*return*/, showsDisplayData];
@@ -12779,7 +12781,7 @@ function populateShows(shows) {
     $showsList.empty();
     for (var _i = 0, shows_1 = shows; _i < shows_1.length; _i++) {
         var show = shows_1[_i];
-        var $show = $("<div data-show-id=\"".concat(show.id, "\" class=\"Show col-md-12 col-lg-6 mb-4\">\n         <div class=\"media\">\n           <img\n              src=\"http://static.tvmaze.com/uploads/images/medium_portrait/160/401704.jpg\"\n              alt=\"Bletchly Circle San Francisco\"\n              class=\"w-25 me-3\">\n           <div class=\"media-body\">\n             <h5 class=\"text-primary\">").concat(show.name, "</h5>\n             <div><small>").concat(show.summary, "</small></div>\n             <button class=\"btn btn-outline-light btn-sm Show-getEpisodes\">\n               Episodes\n             </button>\n           </div>\n         </div>\n       </div>\n      "));
+        var $show = $("<div data-show-id=\"".concat(show.id, "\" class=\"Show col-md-12 col-lg-6 mb-4\">\n         <div class=\"media\">\n           <img\n              src=\"").concat(show.image, "\"\n              alt=\"Bletchly Circle San Francisco\"\n              class=\"w-25 me-3\">\n           <div class=\"media-body\">\n             <h5 class=\"text-primary\">").concat(show.name, "</h5>\n             <div><small>").concat(show.summary, "</small></div>\n             <button class=\"btn btn-outline-light btn-sm Show-getEpisodes\">\n               Episodes\n             </button>\n           </div>\n         </div>\n       </div>\n      "));
         $showsList.append($show);
     }
 }
@@ -12828,18 +12830,22 @@ function getEpisodesOfShow(id) {
                 case 0: return [4 /*yield*/, axios_1.default.get("".concat(BASE_URL, "/shows/").concat(id, "/episodes"))];
                 case 1:
                     response = _a.sent();
-                    return [2 /*return*/, response.data.map(function (e) { return ({
-                            id: e.id,
-                            name: e.name,
-                            season: e.season,
-                            number: e.number,
-                        }); })];
+                    return [2 /*return*/, response
+                            .data
+                            .map(function (e) { return ({ id: e.id, name: e.name, season: e.season, number: e.number }); })];
             }
         });
     });
 }
 /** Write a clear docstring for this function... */
-// function populateEpisodes(episodes) { }
+function populateEpisodes(episodes) {
+    $episodesArea.empty();
+    for (var _i = 0, episodes_1 = episodes; _i < episodes_1.length; _i++) {
+        var episode = episodes_1[_i];
+        var $episode = $("<li><strong>".concat(episode.id, ". ").concat(episode.name, " </strong>(season ").concat(episode.season, ", ep. ").concat(episode.number, "</li>\n      "));
+        $episodesArea.append($episode);
+    }
+}
 
 
 /***/ })
