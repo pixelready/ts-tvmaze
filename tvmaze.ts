@@ -20,7 +20,7 @@ interface ShowInterfaceFromAPI {
   summary: string,
   image: {
     medium: string
-  }
+  }|null //If the key doesn't exist
 }
 
 interface ShowInterface {
@@ -102,7 +102,7 @@ function populateShows(shows
  */
 
 async function searchForShowAndDisplay(): Promise<void> {
-  const term = $("#searchForm-term").val() as string;
+  const term: string = <string>$("#searchForm-term").val(); //or you can just use 'as string' at the end
   const shows = await getShowsByTerm(term);
 
   $episodesArea.hide();
